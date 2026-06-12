@@ -86,15 +86,20 @@ class CoffeeTracker {
 
         if (this.editingId !== null) {
             const index = this.coffeeData.findIndex(c => c.id === this.editingId);
-            if (index !== -1) {
-                this.coffeeData[index] = {
-                    ...this.coffeeData[index],
-                    type,
-                    size,
-                    time,
-                    notes
-                };
+            if (index === -1) {
+                this.showNotification('Unable to update: coffee entry not found');
+                this.hideAddForm();
+                return;
             }
+
+            this.coffeeData[index] = {
+                ...this.coffeeData[index],
+                type,
+                size,
+                time,
+                notes
+            };
+
             this.saveData();
             this.updateDisplay();
             this.hideAddForm();
