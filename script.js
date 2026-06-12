@@ -181,7 +181,7 @@ class CoffeeTracker {
                     </div>
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <div class="coffee-time">${this.formatTime(coffee.time)}</div>
-                        <button class="edit-btn" onclick="tracker.editCoffee(${coffee.id})" title="Edit this entry">✏️</button>
+                        <button type="button" class="edit-btn" onclick="tracker.editCoffee(${coffee.id})" title="Edit this entry" aria-label="Edit this coffee entry">✏️</button>
                         <button class="delete-btn" onclick="tracker.deleteCoffee(${coffee.id})" title="Delete this entry">×</button>
                     </div>
                 </div>
