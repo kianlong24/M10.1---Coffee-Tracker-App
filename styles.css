@@ -113,6 +113,12 @@ main {
     box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
 }
 
+.import-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .reset-btn {
     background: linear-gradient(135deg, #74b9ff, #0984e3);
     color: white;
