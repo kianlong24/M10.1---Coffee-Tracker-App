@@ -84,6 +84,11 @@ main {
     font-weight: 500;
 }
 
+.counter-caffeine {
+    margin-top: 8px;
+    font-size: 1rem;
+}
+
 .counter-controls {
     display: flex;
     gap: 15px;
@@ -269,6 +274,13 @@ main {
 .coffee-size {
     color: #666;
     font-size: 0.9rem;
+    margin-bottom: 3px;
+}
+
+.coffee-caffeine {
+    color: #8b5a3c;
+    font-size: 0.9rem;
+    font-weight: 500;
     margin-bottom: 3px;
 }
 
