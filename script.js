@@ -1,6 +1,7 @@
 class CoffeeTracker {
     constructor() {
         this.coffeeData = JSON.parse(localStorage.getItem('coffeeData')) || [];
+        this.editingId = null;
         this.init();
     }
 
@@ -34,6 +35,7 @@ class CoffeeTracker {
     }
 
     showAddForm() {
+        this.resetFormToAddMode();
         document.getElementById('addCoffeeForm').style.display = 'block';
         document.getElementById('addCoffeeForm').scrollIntoView({ behavior: 'smooth' });
         this.setCurrentTime();
@@ -41,7 +43,28 @@ class CoffeeTracker {
 
     hideAddForm() {
         document.getElementById('addCoffeeForm').style.display = 'none';
+        this.resetFormToAddMode();
+    }
+
+    resetFormToAddMode() {
+        this.editingId = null;
+        document.getElementById('addCoffeeForm').querySelector('h3').textContent = 'Add a Coffee';
+        document.querySelector('.submit-btn').textContent = 'Add Coffee';
         this.clearForm();
+    }
+
+    editCoffee(id) {
+        const coffee = this.coffeeData.find(c => c.id === id);
+        if (!coffee) return;
+        this.editingId = id;
+        document.getElementById('coffeeType').value = coffee.type;
+        document.getElementById('coffeeSize').value = coffee.size;
+        document.getElementById('coffeeTime').value = coffee.time;
+        document.getElementById('coffeeNotes').value = coffee.notes || '';
+        document.getElementById('addCoffeeForm').querySelector('h3').textContent = 'Edit Coffee';
+        document.querySelector('.submit-btn').textContent = 'Save Changes';
+        document.getElementById('addCoffeeForm').style.display = 'block';
+        document.getElementById('addCoffeeForm').scrollIntoView({ behavior: 'smooth' });
     }
 
     setCurrentTime() {
@@ -58,6 +81,29 @@ class CoffeeTracker {
 
         if (!type || !size || !time) {
             alert('Please fill in all required fields');
+            return;
+        }
+
+        if (this.editingId !== null) {
+            const index = this.coffeeData.findIndex(c => c.id === this.editingId);
+            if (index === -1) {
+                this.showNotification('Unable to update: coffee entry not found');
+                this.hideAddForm();
+                return;
+            }
+
+            this.coffeeData[index] = {
+                ...this.coffeeData[index],
+                type,
+                size,
+                time,
+                notes
+            };
+
+            this.saveData();
+            this.updateDisplay();
+            this.hideAddForm();
+            this.showNotification('Coffee entry updated! ☕');
             return;
         }
 
@@ -140,6 +186,7 @@ class CoffeeTracker {
                     </div>
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <div class="coffee-time">${this.formatTime(coffee.time)}</div>
+                        <button type="button" class="edit-btn" onclick="tracker.editCoffee(${coffee.id})" title="Edit this entry" aria-label="Edit this coffee entry">✏️</button>
                         <button class="delete-btn" onclick="tracker.deleteCoffee(${coffee.id})" title="Delete this entry">×</button>
                     </div>
                 </div>
