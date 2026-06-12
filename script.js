@@ -275,7 +275,7 @@ class CoffeeTracker {
                 const isValidData = importedData.every((coffee) => (
                     coffee &&
                     typeof coffee === 'object' &&
-                    'id' in coffee &&
+                    typeof coffee.id === 'number' &&
                     typeof coffee.type === 'string' &&
                     typeof coffee.size === 'string' &&
                     typeof coffee.time === 'string' &&
