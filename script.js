@@ -178,8 +178,9 @@ class CoffeeTracker {
     }
 
     getCoffeeCaffeine(coffee) {
-        if (typeof coffee.caffeine === 'number' && Number.isFinite(coffee.caffeine)) {
-            return coffee.caffeine;
+        const storedCaffeine = Number(coffee.caffeine);
+        if (Number.isFinite(storedCaffeine)) {
+            return Math.round(storedCaffeine);
         }
 
         return CoffeeUtils.estimateCaffeine(coffee.type, coffee.size);
