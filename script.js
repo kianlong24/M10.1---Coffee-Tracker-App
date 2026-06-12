@@ -21,6 +21,14 @@ class CoffeeTracker {
             this.resetToday();
         });
 
+        // Export and import controls
+        document.getElementById('exportBtn').addEventListener('click', () => {
+            this.exportData();
+        });
+        document.getElementById('importFileInput').addEventListener('change', (event) => {
+            this.importData(event);
+        });
+
         // Cancel button
         document.getElementById('cancelBtn').addEventListener('click', () => {
             this.hideAddForm();
@@ -248,6 +256,7 @@ class CoffeeTracker {
         link.download = 'coffee-data.json';
         link.click();
         URL.revokeObjectURL(url);
+        this.showNotification('Data exported successfully!');
     }
 
     // Import data function
@@ -259,16 +268,33 @@ class CoffeeTracker {
         reader.onload = (e) => {
             try {
                 const importedData = JSON.parse(e.target.result);
-                if (Array.isArray(importedData)) {
-                    this.coffeeData = importedData;
-                    this.saveData();
-                    this.updateDisplay();
-                    this.showNotification('Data imported successfully!');
-                } else {
-                    throw new Error('Invalid data format');
+                if (!Array.isArray(importedData)) {
+                    throw new Error('Invalid file format. Expected a list of coffee entries.');
                 }
+
+                const isValidData = importedData.every((coffee) => (
+                    coffee &&
+                    typeof coffee === 'object' &&
+                    typeof coffee.id === 'number' &&
+                    typeof coffee.type === 'string' &&
+                    typeof coffee.size === 'string' &&
+                    typeof coffee.time === 'string' &&
+                    typeof coffee.date === 'string' &&
+                    (coffee.notes === undefined || typeof coffee.notes === 'string')
+                ));
+
+                if (!isValidData) {
+                    throw new Error('Invalid coffee data. Please import a file exported from this app.');
+                }
+
+                this.coffeeData = importedData;
+                this.saveData();
+                this.updateDisplay();
+                this.showNotification('Data imported successfully!');
             } catch (error) {
-                alert('Error importing data. Please make sure the file is valid.');
+                alert(error.message || 'Error importing data. Please make sure the file is valid JSON.');
+            } finally {
+                event.target.value = '';
             }
         };
         reader.readAsText(file);
