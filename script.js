@@ -67,7 +67,8 @@ class CoffeeTracker {
             size,
             time,
             notes,
-            date: new Date().toDateString()
+            date: new Date().toDateString(),
+            caffeine: CoffeeUtils.estimateCaffeine(type, size)
         };
 
         this.coffeeData.push(coffee);
@@ -112,6 +113,7 @@ class CoffeeTracker {
     updateTodayCount() {
         const todaysCoffee = this.getTodaysCoffee();
         document.getElementById('todayCount').textContent = todaysCoffee.length;
+        document.getElementById('todayCaffeine').textContent = `${this.getTotalCaffeine(todaysCoffee)} mg`;
     }
 
     updateCoffeeList() {
@@ -136,6 +138,7 @@ class CoffeeTracker {
                     <div class="coffee-details">
                         <div class="coffee-type">${coffee.type}</div>
                         <div class="coffee-size">${coffee.size}</div>
+                        <div class="coffee-caffeine">${this.getCoffeeCaffeine(coffee)} mg caffeine</div>
                         ${coffee.notes ? `<div class="coffee-notes">"${coffee.notes}"</div>` : ''}
                     </div>
                     <div style="display: flex; align-items: center; gap: 10px;">
@@ -172,6 +175,18 @@ class CoffeeTracker {
             typeCount[a] > typeCount[b] ? a : b
         );
         document.getElementById('favoriteType').textContent = favoriteType;
+    }
+
+    getCoffeeCaffeine(coffee) {
+        if (typeof coffee.caffeine === 'number' && Number.isFinite(coffee.caffeine)) {
+            return coffee.caffeine;
+        }
+
+        return CoffeeUtils.estimateCaffeine(coffee.type, coffee.size);
+    }
+
+    getTotalCaffeine(coffeeEntries) {
+        return coffeeEntries.reduce((total, coffee) => total + this.getCoffeeCaffeine(coffee), 0);
     }
 
     formatTime(time24) {
